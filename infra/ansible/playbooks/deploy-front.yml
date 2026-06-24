@@ -59,5 +59,14 @@
       ignore_errors: true
 
     - name: Start Front Container
-      command: docker run -d -p 3000:3000 --name {{front_container_name}} {{front_image}}
+      command: >
+        docker run -d
+        -p 3000:3000
+        -e BASE_URL_API_WEGIA={{base_url_api_wegia}}
+        -e BASE_URL_API_WEGIA_PATH={{base_url_api_wegia_path}}
+        -e BASE_URL_API_PAGAR_ME={{base_url_api_pagar_me}}
+        -e PUBLIC_KEY_PAGAR_ME={{public_key_pagar_me}}
+        -e BASE_URL_API_CEP={{base_url_api_cep}}
+        --name {{front_container_name}}
+        {{front_image}}
       become: true
