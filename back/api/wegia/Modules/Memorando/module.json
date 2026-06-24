@@ -1,0 +1,16 @@
+{
+    "name": "Memorando",
+    "alias": "memorando",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Memorando\\Providers\\MemorandoServiceProvider"
+    ],
+    "files": [],
+    "migration": {
+        "seeds": [
+            "Modules\\Memorando\\Database\\Seeders\\DatabaseSeeder"
+        ]
+    }
+}

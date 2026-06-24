@@ -1,0 +1,35 @@
+// até 576px
+@mixin sm {
+    @media (min-width: 576px) {
+        @content;
+    }
+}
+  
+// até 768px
+@mixin md {
+    @media (min-width: 768px) {
+      @content;
+    }
+}
+  
+// até 1024px
+@mixin lg {
+    @media (min-width: 1024px) {
+      @content;
+    }
+}
+  
+// até 1200px
+@mixin xl {
+    @media (min-width: 1200px) {
+        @content;
+    }
+}
+  
+// até 1400px
+@mixin xxl {
+    @media (min-width: 1400px) {
+        @content;
+    }
+}
+  

@@ -1,0 +1,103 @@
+// Mixins de responsividade e variaveis de css
+@use "responsive" as *;
+@use "variables" as *;
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    font-size: 16px;
+    font-family: $font-primary;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    background-color: #fff;
+    color: #333;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+    font-family: $font-primary;
+}
+
+p {
+    white-space: pre-line;
+}
+
+ul, ol {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+button, input, textarea, select {
+    font: inherit;
+    border: none;
+    background: none;
+    outline: none;
+}
+
+button {
+    cursor: pointer;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+.sem-permissao {
+    color: $color-error;
+    text-align: center;
+    margin-top: 24px
+}
+
+.container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 10px;
+
+    @include md {
+        max-width: 768px;
+        padding: 0 20px;
+    }
+
+    @include lg {
+        max-width: 1024px;
+        padding: 0 30px;
+    }
+
+    @include xl {
+        max-width: 1200px;
+        padding: 0 40px;
+    }
+
+    @include xxl {
+        max-width: 1400px;
+        padding: 0 50px;
+    }
+}

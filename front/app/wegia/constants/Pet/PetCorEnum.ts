@@ -1,0 +1,16 @@
+export enum PetCorEnum {
+  PRETO = 'Preto',
+  BRANCO = 'Branco',
+  CINZA = 'Cinza',
+  MARROM = 'Marrom',
+  CARAMELO = 'Caramelo',
+  AMARELO = 'Amarelo',
+  BEGE = 'Bege',
+  DOURADO = 'Dourado',
+  RUIVO = 'Ruivo',
+  CREME = 'Creme',
+  AZUL = 'Azul',
+  CHOCOLATE = 'Chocolate',
+  BICOLOR = 'Bicolor',
+  TRICOLOR = 'Tricolor',
+}

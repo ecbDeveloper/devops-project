@@ -1,0 +1,35 @@
+services:
+  app:
+    container_name: app
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./app/wegia:/app
+      - /app/wegia/node_modules
+    environment:
+      - NODE_ENV=development
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - wegia-network
+
+  docs:
+    image: python:3.12-slim
+    container_name: mkdocs-back-dev
+    working_dir: /app
+    ports:
+      - "8011:8000"
+    volumes:
+      - ./docs:/app/docs
+      - ./mkdocs.yml:/app/mkdocs.yml
+    networks:
+      - wegia-network
+    command: >
+      sh -c "pip install --no-cache-dir mkdocs==1.6.1 mkdocs-material==9.6.21 mkdocs-material-extensions==1.3.1 && mkdocs serve -a 0.0.0.0:8000 --livereload"
+
+networks:
+  wegia-network:
+    external: true

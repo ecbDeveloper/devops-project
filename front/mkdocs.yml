@@ -1,0 +1,68 @@
+site_name: Documentação WeGIA Frontend
+site_description: 'Documentação técnica completa do frontend WeGIA (Nuxt 3 + Pinia).'
+site_author: 'Equipe de Desenvolvimento'
+
+theme:
+  name: material
+  language: pt
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Alternar para tema escuro
+    - scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Alternar para tema claro
+  features:
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotation
+    - content.code.copy
+
+plugins:
+  - search
+
+nav:
+  - 'Início': 'index.md'
+  - 'Guia de Instalação': 'instalacao.md'
+  - 'Arquitetura do Software': 'arquitetura.md'
+  - 'Estrutura do Projeto': 'estrutura-projeto.md'
+  - 'Rotas': 'rotas.md'
+  - 'Componentes': 'componentes.md'
+  - 'Layouts': 'layouts.md'
+  - 'Páginas': 'paginas.md'
+  - 'Serviços': 'servicos.md'
+  - 'Estado da Aplicação': 'estado.md'
+  - 'Autenticação': 'autenticacao.md'
+  - 'Permissões': 'permissoes.md'
+  - 'Formulários e Validações': 'formularios-validacoes.md'
+  - 'Integração com API': 'integracao-api.md'
+  - 'Tratamento de Erros': 'tratamento-erros.md'
+  - 'Estilos': 'estilos.md'
+  - 'Assets': 'assets.md'
+  - 'Variáveis de Ambiente': 'variaveis-ambiente.md'
+  - 'Build e Deploy': 'build-deploy.md'
+  - 'Boas Práticas': 'boas-praticas.md'
+  - 'Troubleshooting': 'troubleshooting.md'
+  - 'Desenvolvimento':
+      - 'Padrões de Código': 'desenvolvimento/padroes-codigo.md'
+      - 'Criação de Componentes': 'desenvolvimento/criacao-componentes.md'
+      - 'Criação de Páginas': 'desenvolvimento/criacao-paginas.md'
+      - 'Consumo de API': 'desenvolvimento/consumo-api.md'
+      - 'Hooks/Composables': 'desenvolvimento/hooks-composables.md'
+      - 'Testes': 'desenvolvimento/testes.md'
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - attr_list
+  - md_in_html
