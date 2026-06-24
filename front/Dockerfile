@@ -7,18 +7,12 @@ COPY ./app/wegia ./
 RUN npm install
 RUN npm run build
 
-FROM alpine:latest
-
-RUN apk add --no-cache nodejs npm nginx bash gettext
+FROM node:24-alpine
 
 WORKDIR /app
 
 COPY --from=builder /app/.output .output
-COPY ./app/config/default.conf /etc/nginx/conf.d/default.conf.template
-COPY ./app/config/nginx.conf /etc/nginx/nginx.conf.template
-COPY ./app/config/custom-entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
 
-EXPOSE 80
+EXPOSE 3000
 
-CMD ["/entrypoint.sh"]
+CMD ["node", ".output/server/index.mjs"]

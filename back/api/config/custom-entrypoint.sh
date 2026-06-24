@@ -2,7 +2,6 @@
 
 set -e
 
-export $(grep -v '^#' /var/www/html/.env | xargs)
 
 echo "Instalando as bibliotecas"
 composer install --optimize-autoloader --no-dev
@@ -26,5 +25,4 @@ chown -R www-data:www-data /var/www/html/storage/app/private
 mkdir -p /var/www/html/storage/app/backups && \
 chown -R www-data:www-data /var/www/html/storage/app/backups
 
-php-fpm &
-nginx -g 'daemon off;'
+php-fpm -F
