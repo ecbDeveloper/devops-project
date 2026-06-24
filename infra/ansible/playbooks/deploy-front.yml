@@ -1,0 +1,8 @@
+- name: Deploy Front
+  hosts: hosts
+
+  tasks:
+    - name: Ping My Hosts
+      ansible.builtin.ping:
+
+    - name: Download Docker

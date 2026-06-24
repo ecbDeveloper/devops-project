@@ -1,0 +1,6 @@
+- name: Deploy Back
+  hosts: hosts
+
+  tasks:
+    - name: Ping My Hosts
+      ansible.builtin.ping:
