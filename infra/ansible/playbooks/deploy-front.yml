@@ -1,8 +1,63 @@
 - name: Deploy Front
   hosts: hosts
+  remote_user: azureuser
+  vars:
+    front_image: castilhoeduardo/wegia-front:v2
+    front_container_name: wegia-front
+
+  handlers:
+    - name: Restart Nginx
+      systemd:
+        name: nginx
+        state: restarted
+      become: true
 
   tasks:
     - name: Ping My Hosts
       ansible.builtin.ping:
 
-    - name: Download Docker
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+      become: true
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+      become: true
+
+    - name: Start Docker service
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+      become: true
+
+    - name: Copy Nginx Conf
+      template:
+        src: ../../nginx/nginx.conf.j2
+        dest: /etc/nginx/sites-available/default
+      become: true
+      notify: Restart Nginx
+
+    - name: Start Nginx service
+      systemd:
+        name: nginx
+        state: started
+        enabled: yes
+      become: true
+
+    - name: Push Front Image
+      command: docker pull {{front_image}}
+      become: true
+
+    - name: Remove Older Container
+      command: docker rm -f {{front_container_name}}
+      become: true
+      ignore_errors: true
+
+    - name: Start Front Container
+      command: docker run -d -p 3000:3000 --name {{front_container_name}} {{front_image}}
+      become: true
