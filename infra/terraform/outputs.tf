@@ -1,3 +1,7 @@
 output "gateway_public_ip" {
-  value = azurerm_public_ip.pIP.ip_address
+  value = module.compute.public_ip
+}
+
+output "database_host" {
+  value = module.database.server_fqdn
 }
