@@ -14,7 +14,12 @@
 
   tasks:
     - name: Ping My Hosts
-      ansible.builtin.ping:
+      ping:
+
+    - name: Update Apt cache
+      apt:
+        update_cache: yes
+      become: true
 
     - name: Install Docker
       apt:
