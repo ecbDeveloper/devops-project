@@ -48,12 +48,6 @@ module "compute" {
   vm_size             = var.azurerm_vm_size
 }
 
-module "database" {
-  source              = "./modules/database"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-}
-
 module "aks" {
   source              = "./modules/aks"
   resource_group_name = azurerm_resource_group.rg.name
