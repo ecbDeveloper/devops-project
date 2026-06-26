@@ -2,11 +2,11 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   name                = "k8sCEFET"
   location            = var.location
   resource_group_name = var.resource_group_name
-  dns_prefix          = "exampleaks1"
+  dns_prefix          = "akscefet"
 
   default_node_pool {
     name       = "default"
-    node_count = 3
+    node_count = 2
     vm_size    = var.vm_size
   }
 

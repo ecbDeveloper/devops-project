@@ -9,3 +9,7 @@ variable "azurerm_region" {
 variable "azurerm_vm_size" {
   type = string
 }
+
+variable "azurerm_k8s_vms_size" {
+  type = string
+}
