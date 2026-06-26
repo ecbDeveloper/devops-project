@@ -19,11 +19,6 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   }
 }
 
-output "client_certificate" {
-  value     = azurerm_kubernetes_cluster.k8s.kube_config[0].client_certificate
-  sensitive = true
-}
-
 resource "local_file" "kube_config" {
   content  = azurerm_kubernetes_cluster.k8s.kube_config_raw
   filename = "${path.module}/azurek8s.yaml"
