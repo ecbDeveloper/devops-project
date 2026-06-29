@@ -15,8 +15,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   }
 
   web_app_routing {
-    dns_zone_ids             = []
-    default_nginx_controller = "Internal"
+    dns_zone_ids = []
   }
 
   tags = {
