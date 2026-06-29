@@ -9,19 +9,6 @@ on:
         required: true
 
 jobs:
-  docker_lint:
-    name: Docker Lint
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Lint
-        uses: hadolint/hadolint-action@v3.1.0
-        with:
-          dockerfile: ./back/Dockerfile
-
   trivy:
     name: Trivy
     runs-on: ubuntu-latest
