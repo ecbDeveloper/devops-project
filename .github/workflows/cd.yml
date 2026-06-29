@@ -15,7 +15,7 @@ on:
         required: true
       MAIL_PASSWORD:
         required: true
-      CLUSTER_URL:
+      KUBE_CONFIG:
         required: true
       BASE_URL_API_WEGIA:
         required: true
@@ -37,22 +37,40 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Instalar Ansible e kubectl
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ansible
+          curl -LO "https://dl.k8s.io/release/v1.30.0/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/kubectl
+
+      - name: Configurar kubeconfig do AKS
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
+          chmod 600 ~/.kube/config
+
+      - name: Configurar chave SSH da VM
+        run: |
+          mkdir -p ~/.ssh
+          printf "%s\n" "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 700 ~/.ssh
+          chmod 600 ~/.ssh/id_rsa
+
       - name: Run backend playbook
-        uses: dawidd6/action-ansible-playbook@v2
-        with:
-          playbook: infra/ansible/playbooks/deploy-back.yml
-          options: |
-            --extra-vars "cluster_url='${{ secrets.CLUSTER_URL }}' app_key='${{ secrets.APP_KEY }}' db_password='${{ secrets.DB_PASSWORD }}' private_key_pagar_me='${{ secrets.PRIVATE_KEY_PAGAR_ME }}' base_url_api_pagar_me='${{ secrets.BASE_URL_API_PAGAR_ME }}' allowed_ips_pagar_me='${{ secrets.ALLOWED_IPS_PAGAR_ME }}' mail_password='${{ secrets.MAIL_PASSWORD }}'"
+        run: |
+          ansible-playbook infra/ansible/playbooks/deploy-back.yml \
+            --extra-vars "app_key='${{ secrets.APP_KEY }}' db_password='${{ secrets.DB_PASSWORD }}' private_key_pagar_me='${{ secrets.PRIVATE_KEY_PAGAR_ME }}' base_url_api_pagar_me='${{ secrets.BASE_URL_API_PAGAR_ME }}' allowed_ips_pagar_me='${{ secrets.ALLOWED_IPS_PAGAR_ME }}' mail_password='${{ secrets.MAIL_PASSWORD }}'"
 
       - name: Run frontend playbook
-        uses: dawidd6/action-ansible-playbook@v2
-        with:
-          playbook: infra/ansible/playbooks/deploy-front.yml
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          options: |
-            --user azureuser
-            --inventory infra/ansible/hosts.ini
+        run: |
+          ansible-playbook -i infra/ansible/hosts.ini infra/ansible/playbooks/deploy-front.yml \
+            -u azureuser \
+            --private-key ~/.ssh/id_rsa \
             --extra-vars "base_url_api_wegia='${{ secrets.BASE_URL_API_WEGIA }}' base_url_api_wegia_path='${{ secrets.BASE_URL_API_WEGIA_PATH }}' base_url_api_pagar_me='${{ secrets.BASE_URL_API_PAGAR_ME }}' public_key_pagar_me='${{ secrets.PUBLIC_KEY_PAGAR_ME }}' base_url_api_cep='${{ secrets.BASE_URL_API_CEP }}'"
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: "False"
 
   dast:
     name: DAST

@@ -31,7 +31,7 @@ jobs:
       PRIVATE_KEY_PAGAR_ME: ${{ secrets.PRIVATE_KEY_PAGAR_ME }}
       ALLOWED_IPS_PAGAR_ME: ${{ secrets.ALLOWED_IPS_PAGAR_ME }}
       MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
-      CLUSTER_URL: ${{ secrets.CLUSTER_URL }}
+      KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
       BASE_URL_API_WEGIA: ${{ secrets.BASE_URL_API_WEGIA }}
       BASE_URL_API_WEGIA_PATH: ${{ secrets.BASE_URL_API_WEGIA_PATH }}
       BASE_URL_API_PAGAR_ME: ${{ secrets.BASE_URL_API_PAGAR_ME }}
