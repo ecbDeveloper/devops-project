@@ -1,6 +1,18 @@
-- name: Deploy Back
-  hosts: hosts
+- name: Deploy Back to AKS
+  hosts: localhost
+  connection: local
 
   tasks:
-    - name: Ping My Hosts
-      ansible.builtin.ping:
+    - name: Apply standard Kubernetes manifests
+      command: kubectl --server="{{ cluster_url }}" apply -f ../../../infra/k8s/
+      ignore_errors: yes
+
+    - name: Apply Secrets with envsubst
+      shell: "envsubst < ../../../infra/k8s/secret.yaml | kubectl --server='{{ cluster_url }}' apply -f -"
+      environment:
+        APP_KEY: "{{ app_key }}"
+        DB_PASSWORD: "{{ db_password }}"
+        PRIVATE_KEY_PAGAR_ME: "{{ private_key_pagar_me }}"
+        BASE_URL_API_PAGAR_ME: "{{ base_url_api_pagar_me }}"
+        ALLOWED_IPS_PAGAR_ME: "{{ allowed_ips_pagar_me }}"
+        MAIL_PASSWORD: "{{ mail_password }}"
