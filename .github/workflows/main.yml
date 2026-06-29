@@ -7,7 +7,6 @@ on:
 jobs:
   ci:
     name: CI Workflow
-    needs: build
     uses: ./.github/workflows/ci.yml
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -15,7 +14,6 @@ jobs:
 
   container:
     name: Container
-    needs: build
     uses: ./.github/workflows/container.yml
     secrets:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -24,7 +22,6 @@ jobs:
   cd:
     name: CD
     needs:
-      - build
       - ci
     uses: ./.github/workflows/cd.yml
     secrets:
@@ -55,4 +52,3 @@ jobs:
             echo "❌ O pipeline FALHOU! Verifique os logs."
             exit 1
           fi
-
