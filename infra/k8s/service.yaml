@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: wegia-back
+  namespace: wegia
+  labels:
+    app: wegia-back
+spec:
+  ports:
+  - port: 80
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  selector:
+    app: wegia-back
+  type: ClusterIP
