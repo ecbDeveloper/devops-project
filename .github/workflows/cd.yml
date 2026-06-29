@@ -1,0 +1,71 @@
+name: CD
+
+on:
+  workflow_call:
+    secrets:
+      SSH_PRIVATE_KEY:
+        required: true
+      APP_KEY:
+        required: true
+      DB_PASSWORD:
+        required: true
+      PRIVATE_KEY_PAGAR_ME:
+        required: true
+      ALLOWED_IPS_PAGAR_ME:
+        required: true
+      MAIL_PASSWORD:
+        required: true
+      CLUSTER_URL:
+        required: true
+      BASE_URL_API_WEGIA:
+        required: true
+      BASE_URL_API_WEGIA_PATH:
+        required: true
+      BASE_URL_API_PAGAR_ME:
+        required: true
+      PUBLIC_KEY_PAGAR_ME:
+        required: true
+      BASE_URL_API_CEP:
+        required: true
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Run backend playbook
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: infra/ansible/playbooks/deploy-back.yml
+          options: |
+            --extra-vars "cluster_url='${{ secrets.CLUSTER_URL }}' app_key='${{ secrets.APP_KEY }}' db_password='${{ secrets.DB_PASSWORD }}' private_key_pagar_me='${{ secrets.PRIVATE_KEY_PAGAR_ME }}' base_url_api_pagar_me='${{ secrets.BASE_URL_API_PAGAR_ME }}' allowed_ips_pagar_me='${{ secrets.ALLOWED_IPS_PAGAR_ME }}' mail_password='${{ secrets.MAIL_PASSWORD }}'"
+
+      - name: Run frontend playbook
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: infra/ansible/playbooks/deploy-front.yml
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          options: |
+            --user azureuser
+            --inventory infra/ansible/hosts.ini
+            --extra-vars "base_url_api_wegia='${{ secrets.BASE_URL_API_WEGIA }}' base_url_api_wegia_path='${{ secrets.BASE_URL_API_WEGIA_PATH }}' base_url_api_pagar_me='${{ secrets.BASE_URL_API_PAGAR_ME }}' public_key_pagar_me='${{ secrets.PUBLIC_KEY_PAGAR_ME }}' base_url_api_cep='${{ secrets.BASE_URL_API_CEP }}'"
+
+  dast:
+    name: DAST
+    runs-on: ubuntu-latest
+    needs: deploy
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: ZAP Scan
+        uses: zaproxy/action-baseline@v0.15.0
+        continue-on-error: true
+        with:
+          target: ${{ vars.FRONTEND_URL }}
+          fail_action: true

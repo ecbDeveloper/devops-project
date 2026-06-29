@@ -1,0 +1,64 @@
+name: Container
+
+on:
+  workflow_call:
+    secrets:
+      DOCKER_USERNAME:
+        required: true
+      DOCKER_PASSWORD:
+        required: true
+
+jobs:
+  docker_lint:
+    name: Docker Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Lint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ./back/Dockerfile
+
+  trivy:
+    name: Trivy
+    runs-on: ubuntu-latest
+    needs: docker_lint
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Back image
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          context: ./back
+          file: ./back/Dockerfile
+          tags: castilhoeduardo/wegia-back:latest
+
+      - name: Build Front image
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          context: ./front
+          file: ./front/Dockerfile
+          tags: castilhoeduardo/wegia-front:latest
+
+      - name: Vulnerabilities Check
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: castilhoeduardo/wegia-back:latest
+          format: "table"
+          exit-code: "1"
+          ignore-unfixed: true
+          vuln-type: "os,library"
+          severity: "CRITICAL,HIGH"

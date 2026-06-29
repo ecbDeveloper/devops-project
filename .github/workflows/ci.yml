@@ -1,0 +1,106 @@
+name: CI
+
+on:
+  workflow_call:
+    secrets:
+      SONAR_TOKEN:
+        required: true
+      SEMGREP_APP_TOKEN:
+        required: true
+
+jobs:
+  unit_tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          extensions: mbstring, xml, ctype, iconv, mysql, gd, zip
+          coverage: none
+
+      - name: Copy .env
+        run: cp back/api/wegia/.env.example back/api/wegia/.env
+
+      - name: Install dependencies
+        run: |
+          cd back/api/wegia
+          composer install --no-interaction --prefer-dist
+
+      - name: Generate key
+        run: |
+          cd back/api/wegia
+          php artisan key:generate
+
+      - name: Unit Test
+        run: |
+          cd back/api/wegia
+          php artisan test
+
+  lint_analyze:
+    name: Lint Analyze
+    needs: unit_tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          coverage: none
+
+      - name: Install dependencies
+        run: |
+          cd back/api/wegia
+          composer install --no-interaction --prefer-dist
+
+      - name: Run Pint
+        run: |
+          cd back/api/wegia
+          ./vendor/bin/pint --test
+
+  code_analyze:
+    name: Code Analyze
+    runs-on: ubuntu-latest
+    needs:
+      - unit_tests
+      - lint_analyze
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - uses: SonarSource/sonarqube-scan-action@299e4b793aaa83bf2aba7c9c14bedbb485688ec4
+        with:
+          args: >
+            -Dsonar.projectBaseDir=back
+            -Dsonar.projectKey=projeto-laravel
+            -Dsonar.qualitygate.wait=true
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  security_testing:
+    name: SAST
+    runs-on: ubuntu-latest
+    needs:
+      - unit_tests
+      - lint_analyze
+      - code_analyze
+    container:
+      image: semgrep/semgrep
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Semgrep CI
+        run: semgrep ci
+        env:
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN}}
