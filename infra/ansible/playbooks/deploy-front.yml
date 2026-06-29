@@ -2,7 +2,7 @@
   hosts: hosts
   remote_user: azureuser
   vars:
-    front_image: castilhoeduardo/wegia-front:v2
+    front_image: castilhoeduardo/wegia-front:latest
     front_container_name: wegia-front
 
   handlers:
