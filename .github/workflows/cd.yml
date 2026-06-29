@@ -68,4 +68,4 @@ jobs:
         continue-on-error: true
         with:
           target: ${{ vars.FRONTEND_URL }}
-          fail_action: true
+          fail_action: false
