@@ -3,18 +3,17 @@ kind: Ingress
 metadata:
   name: wegia-back-ingress
   namespace: wegia
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+
 spec:
+  igressClassName: webapprouting.kubernetes.azure.com
   rules:
-  - host: api.wegia.local
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: wegia-back
-            port:
-              number: 80
+    - host: api.wegia.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: wegia-back
+                port:
+                  number: 80

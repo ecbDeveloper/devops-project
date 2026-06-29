@@ -14,6 +14,11 @@ resource "azurerm_kubernetes_cluster" "k8s" {
     type = "SystemAssigned"
   }
 
+  web_app_routing {
+    dns_zone_ids             = []
+    default_nginx_controller = "Internal"
+  }
+
   tags = {
     Environment = "Production"
   }
