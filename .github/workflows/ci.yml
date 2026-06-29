@@ -77,11 +77,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      - uses: SonarSource/sonarqube-scan-action@299e4b793aaa83bf2aba7c9c14bedbb485688ec4
+      - uses: SonarSource/sonarqube-scan-action@7006c4492b2e0ee0f816d36501671557c97f5995
         with:
           args: >
-            -Dsonar.projectBaseDir=back
-            -Dsonar.projectKey=projeto-laravel
+            -Dsonar.projectKey=ecbDeveloper_devops-project
+            -Dsonar.organization=ecbdeveloper
             -Dsonar.qualitygate.wait=true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
