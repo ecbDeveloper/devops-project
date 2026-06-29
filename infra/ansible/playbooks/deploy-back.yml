@@ -9,9 +9,6 @@
     - name: Apply standard Kubernetes manifests
       command: kubectl apply -f ../../../infra/k8s/
 
-    - name: Apply Database manifests
-      command: kubectl apply -f ../../../infra/k8s/database/
-
     - name: Apply Secrets with envsubst
       shell: "envsubst < ../../../infra/k8s/secret.yaml | kubectl apply -f -"
       environment:
