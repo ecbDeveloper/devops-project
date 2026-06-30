@@ -5,7 +5,7 @@ metadata:
   namespace: wegia
 
 spec:
-  igressClassName: webapprouting.kubernetes.azure.com
+  ingressClassName: webapprouting.kubernetes.azure.com
   rules:
     - host: api.wegia.local
       http:
