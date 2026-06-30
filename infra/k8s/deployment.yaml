@@ -20,13 +20,20 @@ spec:
       labels:
         app: wegia-back
     spec:
+      initContainers:
+        - name: copy-public
+          image: castilhoeduardo/wegia-back:latest
+          command: ["/bin/sh", "-c", "cp -a /var/www/html/public/. /shared-public/"]
+          volumeMounts:
+            - name: shared-public
+              mountPath: /shared-public
       containers:
         - name: api
           image: castilhoeduardo/wegia-back:latest
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8000
-              name: http
+            - containerPort: 9000
+              name: fastcgi
           envFrom:
             - configMapRef:
                 name: wegia-back-config
@@ -41,11 +48,50 @@ spec:
               memory: 512Mi
           livenessProbe:
             tcpSocket:
-              port: 8000
+              port: 9000
             initialDelaySeconds: 30
             periodSeconds: 10
           readinessProbe:
             tcpSocket:
-              port: 8000
+              port: 9000
             initialDelaySeconds: 15
             periodSeconds: 5
+          volumeMounts:
+            - name: shared-public
+              mountPath: /var/www/html/public
+        
+        - name: web
+          image: nginx:alpine
+          ports:
+            - containerPort: 8000
+              name: http
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+          livenessProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          volumeMounts:
+            - name: shared-public
+              mountPath: /var/www/html/public
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+      
+      volumes:
+        - name: shared-public
+          emptyDir: {}
+        - name: nginx-config
+          configMap:
+            name: wegia-nginx-config
